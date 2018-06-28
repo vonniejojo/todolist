@@ -9,6 +9,8 @@
       <md-input v-model="password" @keyup.enter="checkLogin" type="password"></md-input>
     </md-field>
     <md-button class="md-raised" @click="checkLogin" >登录</md-button>
+    <md-button class="md-raised" style="margin-left:20px;">注册</md-button>
+    
 </div>
 </template>
 

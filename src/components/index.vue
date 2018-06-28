@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="page-container" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--搜索弹出框-->
@@ -26,7 +26,7 @@
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell md-label="名称" md-sort-by="title" md-numeric>{{ item.title }}</md-table-cell>
             <md-table-cell md-label="备注" md-sort-by="remarks">{{ item.remarks }}</md-table-cell>
-            <md-table-cell md-label="时间" md-sort-by="date">{{ item.date }}</md-table-cell>
+            <md-table-cell md-label="时间" md-sort-by="date">{{ item.date|formatDate }}</md-table-cell>
             <md-table-cell md-label="列表" md-sort-by="belong">{{ item.belong }}</md-table-cell>
             <md-table-cell md-label="是否完成" md-sort-by="finished">{{ item.finished }}</md-table-cell>
         </md-table-row>
@@ -38,7 +38,7 @@
     </md-dialog>
     <!--搜索弹出框End-->
 
-    <md-app>
+    <md-app v-if="islogin">
       <!--topbar-->
       <md-app-toolbar class="md-primary topbar" :class="{topbar2:active}" >
         <!--汉堡按钮-->
@@ -46,16 +46,18 @@
           <i class="material-icons">menu</i>
         </md-button>
 
-        <span class="md-title">TODOLIST</span>
-        <div class="changestyle">
-          <i class="material-icons" @click="activeChange">bookmark</i>
-        </div>
+        <!-- <span class="md-title" v-if="name===''">TODOLIST</span> -->
+        <span class="md-title">{{showname}}</span>
+
+
 
         <div class="app-search">
           <input @input="searchOnTable" v-model="searchinfo" @keyup.enter="showsearch = true" type="text" class="form-control" placeholder="Search for..." />
           <i class="material-icons app-search-btn" @click="showsearch = true">search</i>
         </div>
-
+        <div class="changestyle">
+          <i class="material-icons" @click="activeChange">bookmark</i>
+        </div>
       </md-app-toolbar>
       <!--topbar End-->
 
@@ -98,6 +100,7 @@
             <md-list-item v-for="list in lists" class="temp sidebar-item">
               <i class="material-icons">storage</i>
               <a href="#" class="md-list-item-text" @click="changeList(list.name)">{{ list.name }} <div class="unfinishcount"> {{ $store.getters.getcountbyname(list.name) }}</div></a>
+              <i class="material-icons btn-delete" style="color:red" @click="deleteList(list.name)">clear</i>
             </md-list-item>
           </md-list>
           
@@ -123,7 +126,10 @@
       <!--main-wrapper结束-->
     </md-app>
 
+
+    <div v-if="!islogin">请登录</div>
   </div>
+  
 </template>
 
 <script>
@@ -150,7 +156,8 @@ export default {
       showsearch: false,
       searchinfo: '',
       searched: [],
-      active:false
+      active:false,
+      showname:'TODOLIST'
     }
   },
   components:{
@@ -176,6 +183,8 @@ export default {
       this.name = '';
     },
     changeList(name){
+
+      this.showname = name;
        bus.$emit('toname', name)
     },
     searchOnTable () {
@@ -187,7 +196,19 @@ export default {
     },
     activeChange(){
       this.active = !this.active;
+    },
+    deleteList(name){
+      this.$store.commit('deleteList',name)
     }
+  },
+  filters:{
+      formatDate :function(value){
+        var date = new Date(value);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate() < 10 ? '0' + date.getDate() : '' + date.getDate();
+        return year+'-'+month+'-'+day;
+      }
   }
 
 }
@@ -236,7 +257,11 @@ export default {
  
 
   /*topbar*/
-
+  .btn-delete{
+    color: red;
+    position: relative;
+    left:20px;
+  }
   .md-title{
     position: fixed;
     left:50px;
@@ -265,8 +290,8 @@ export default {
   }
   .changestyle{
     position: fixed;
-    left: 180px;
-    top:28px;
+    right: 10px;
+    top:32px;
   }
   /*topbar*/
 
@@ -300,7 +325,7 @@ export default {
   }
   .unfinishcount{
     position:absolute;
-    left:240px;
+    left:220px;
     top:15px;
     background-color:grey;
     border-radius: 50%;
@@ -314,8 +339,11 @@ export default {
   /*sidebar End*/
 
 
- @media(max-width: 400px) {
+ @media(max-width: 600px) {
    .app-search{
+     display: none;
+   }
+   .changestyle{
      display: none;
    }
  }

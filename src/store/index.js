@@ -78,12 +78,15 @@ const getters = {
 }
 const mutations = {
   addList(state, obj) {
-    var list = {
-      name: obj.name,
-      count: 0,
-      isDelete: false
+    var s = state.lists.find(list => list.name == obj.name)
+    if(!s){
+      var list = {
+        name: obj.name,
+        count: 0,
+        isDelete: false
+      }
+      state.lists.push(list);
     }
-    state.lists.push(list);
   },
   addItem(state, obj) {
     var item = {
@@ -92,12 +95,17 @@ const mutations = {
       date: obj.date,
       belong: obj.belong,
       remarks: obj.remarks,
-      isUrgent:false
+      isUrgent:false,
+      isEdit:false
     }
     state.items.push(item);
   },
   deleteItem(state, title) {
     state.items.splice(state.items.findIndex(item => item.title == title), 1)
+  },
+  deleteList(state,name){
+    state.items.splice(state.items.findIndex(item => item.belong == name), 1)
+    state.lists.splice(state.lists.findIndex(list => list.name == name), 1)
   },
   addUser(state, obj) {
     var username = obj.username;

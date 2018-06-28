@@ -19,18 +19,18 @@
 
                     <md-checkbox v-model="item.finished" @change="changeState(item)"></md-checkbox>
                     <div class="md-list-item-text">
-                        <span v-if="!isupdate" :class="[{finished:item.finished},{urgentstyle:item.isUrgent}]" >{{ item.title }}</span>
-                        <md-field v-if="isupdate" style="width:100px;">
-                            <md-input  @keyup.enter="isupdate = false;changeState(item)"  v-model="item.title"></md-input>
+                        <span v-if="!item.isEdit" :class="[{finished:item.finished},{urgentstyle:item.isUrgent}]" >{{ item.title }}</span>
+                        <md-field v-if="item.isEdit" style="width:100px;">
+                            <md-input  @keyup.enter="item.isEdit = false;changeState(item)"  v-model="item.title"></md-input>
                         </md-field>
                     </div>
 
                     <div>
-                        <md-datepicker  v-model="item.date"></md-datepicker>
+                        <md-datepicker v-model="item.date"></md-datepicker>
                     </div>
                     
                     <div class="btn-inline">
-                        <md-button class="md-raised md-primary" @click="isupdate = !isupdate;changeState(item)">EDIT</md-button>
+                        <md-button class="md-raised md-primary" @click="item.isEdit = !item.isEdit;changeState(item)">EDIT</md-button>
                         <md-button class="md-raised" @click="deleteItem(item.title)">DELETE</md-button>
                     </div>
                 </md-toolbar>
@@ -48,15 +48,15 @@
                     </a>
                     <md-checkbox v-model="item.finished" @click="changeState(item)" ></md-checkbox>
                     <div class="md-list-item-text">
-                        <span v-if="!isupdate" :class="[{finished:item.finished},{urgentstyle:item.isUrgent}]">{{ item.title }}</span>
-                        <md-field v-if="isupdate" style="width:100px;">
-                            <md-input  @keyup.enter="isupdate = false;changeState(item)"  v-model="item.title"></md-input>
+                        <span v-if="!item.isEdit" :class="[{finished:item.finished},{urgentstyle:item.isUrgent}]">{{ item.title }}</span>
+                        <md-field v-if="item.isEdit" style="width:100px;">
+                            <md-input  @keyup.enter="item.isEdit = false;changeState(item)"  v-model="item.title"></md-input>
                         </md-field>
                          
                     </div>
                     <div> <md-datepicker v-model="item.date"></md-datepicker></div>
                     <div class="btn-inline">
-                        <md-button class="md-raised md-primary" @click="isupdate = !isupdate;changeState(item)">EDIT</md-button>
+                        <md-button class="md-raised md-primary" @click="item.isEdit = !item.isEdit;changeState(item)">EDIT</md-button>
                         <md-button class="md-raised" @click="deleteItem(item.title)">DELETE</md-button>
                     </div>
                 </md-toolbar>
@@ -74,46 +74,23 @@
                 </a>
                 <md-checkbox v-model="item.finished" @change="changeState(item)"></md-checkbox>
                     <div class="md-list-item-text">
-                        <span v-if="!isupdate":class="[{finished:item.finished},{urgentstyle:item.isUrgent}]">{{item.title}}</span>
-                        <md-field v-if="isupdate" style="width:100px;">
-                            <md-input  @keyup.enter="isupdate = false;changeState(item)"  v-model="item.title"></md-input>
+                        <span v-if="!item.isEdit" :class="[{finished:item.finished},{urgentstyle:item.isUrgent}]">{{item.title}}</span>
+                        <md-field v-if="item.isEdit" style="width:100px;">
+                            <md-input  @keyup.enter="item.isEdit= false;changeState(item)"  v-model="item.title"></md-input>
                         </md-field>
                     </div>
                     <div> <md-datepicker v-model="item.date"></md-datepicker></div>
                     <div class="btn-inline">
-                        <md-button class="md-raised md-primary" @click="isupdate = !isupdate;changeState(item)">EDIT</md-button>
+                        <md-button class="md-raised md-primary" @click="item.isEdit = !item.isEdit;changeState(item)">EDIT</md-button>
                         <md-button class="md-raised" @click="deleteItem(item.title)">DELETE</md-button>
                     </div>
                 </md-toolbar>
             </md-tab>
             <!--显示未完成-->
 
-            <!--按时间排序-->
-            <!-- <md-tab id="tab-favorites" md-label="Sort">
-                <md-toolbar md-elevation="0" v-for="(item,index) in sortItems">
-                    <a @click="item.isUrgent = !item.isUrgent;init();changeState(item)" href="#"  v-if="item.isUrgent">
-                        <i class="material-icons urgent" >get_app</i>
-                    </a>
-                    <a @click="item.isUrgent = !item.isUrgent;init();changeState(item)" href="#" v-if="!item.isUrgent">
-                        <i class="material-icons urgent" >publish</i>
-                    </a>
-                    <md-checkbox v-model="item.finished" @change="changeState(item)"></md-checkbox>
-                    <div class="md-list-item-text">
-                        <span v-if="!isupdate">{{item.title}}</span>
-                        <md-field v-if="isupdate" style="width:100px;">
-                            <md-input  @keyup.enter="isupdate = false;changeState(item)"  v-model="item.title"></md-input>
-                        </md-field>
-                    </div>
-                    <div> <md-datepicker v-model="item.date"></md-datepicker></div>
-                    <div class="btn-inline">
-                        <md-button class="md-raised md-primary" @click="isupdate = !isupdate;changeState(item)">EDIT</md-button>
-                        <md-button class="md-raised" @click="deleteItem(item.title)">DELETE</md-button>
-                    </div>
-                </md-toolbar>
-            </md-tab> -->
         </md-tabs>
     </div>
-    <!--按时间排序 End-->
+
 </div>
 </template>
 
@@ -132,7 +109,6 @@ export default {
             title: '',
             listName: 'all',
             showDialog: false,
-            isupdate: false,
             items: []
         }
     },
@@ -166,7 +142,8 @@ export default {
                 belong: this.listName,
                 remarks: '',
                 finished: false,
-                isUrgent:false
+                isUrgent:false,
+                isEdit:false
             }
             this.$store.commit('addItem', newItem);
             this.init();
