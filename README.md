@@ -4,11 +4,7 @@
 
 
 # serve with hot reload at localhost:8080
-npm i vuex
-
-npm i vue-localstorage
-
-npm i vue-material
+npm install
 
 npm run dev
 
